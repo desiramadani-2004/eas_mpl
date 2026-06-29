@@ -8,8 +8,10 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('UAS App [${EnvConfig.environment}]'),
-        backgroundColor: EnvConfig.isProduction ? Colors.green : Colors.blueGrey,
+        title: Text(EnvConfig.appName),
+        backgroundColor: EnvConfig.isProduction 
+            ? const Color(0xFF0D47A1) 
+            : Colors.teal,
       ),
       body: Center(
         child: Column(

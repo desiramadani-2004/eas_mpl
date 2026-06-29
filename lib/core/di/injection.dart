@@ -1,6 +1,11 @@
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 import '../config/env_config.dart';
+import '../../features/home/data/repositories/news_repository_impl.dart';
+import '../../features/home/domain/repositories/news_repository.dart';
+import '../../features/home/domain/usecases/get_news_articles_usecase.dart';
+import '../../features/home/presentation/cubit/news_cubit.dart';
+
 
 final locator = GetIt.instance; // [cite: 85]
 
@@ -14,5 +19,18 @@ void setupLocator() { // [cite: 86]
     return dio;
   });
 
-  // Nanti Anda tambahkan pendaftaran Repository dan Cubit di sini! [cite: 94]
+  // 2. Register Repository (Data Layer)
+  locator.registerLazySingleton<NewsRepository>(
+    () => NewsRepositoryImpl(locator()), // locator() akan otomatis mencari Dio di atas
+  );
+
+  // 3. Register UseCase (Domain Layer)
+  locator.registerLazySingleton(
+    () => GetNewsArticlesUseCase(locator()),
+  );
+
+  // 4. Register Cubit (Presentation Layer - Pakai Factory biar fresh)
+  locator.registerFactory(
+    () => NewsCubit(locator()),
+  );
 }

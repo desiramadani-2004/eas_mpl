@@ -11,8 +11,8 @@ class NewsRepositoryImpl implements NewsRepository {
   @override
   Future<List<NewsArticle>> fetchNews() async {
     try {
-      // url tiruan dulu untuk ngetes struktur datanya
-      final response = await dio.get('https://newsapi.org/v2/top-headlines?country=id&apiKey=MOCK_KEY');
+      final String myApiKey = '653d53f6c5ce4503a570544dc89f2805';
+      final response = await dio.get('https://newsapi.org/v2/top-headlines?country=us&apiKey=$myApiKey');
       
       if (response.statusCode == 200) {
         final List articlesJson = response.data['articles'] ?? [];
@@ -29,6 +29,7 @@ class NewsRepositoryImpl implements NewsRepository {
       
       return [];
     } catch (e) {
+      print('🔴 ERROR DARI DIO: $e');
       // Jika internet mati, nanti bisa panggil Isar Database offline-nya
       throw Exception('Gagal memuat berita, periksa koneksi Anda.');
     }

@@ -65,12 +65,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: const CircleAvatar(
                     radius: 70,
                     backgroundColor: Colors.blueAccent,
-                    child: Icon(Icons.person, size: 80, color: Colors.white),
+                    backgroundImage: AssetImage('assets/images/foto.jpg'), // Path ke fotomu
+                    // Tampilkan ikon default jika asset tidak ketemu (fallback)
+                    foregroundImage: AssetImage('assets/images/foto.jpg'),
                   ),
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  'Desi',
+                  'Desi Ramadani',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
@@ -80,7 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  '(Coba tap foto profil 2x secara cepat)',
+                  '(Tap foto profil 2x)',
                   style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
                 ),
               ],

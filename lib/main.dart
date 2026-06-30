@@ -3,13 +3,9 @@ import 'core/di/injection.dart';
 import 'core/routing/app_router.dart';
 import 'core/config/env_config.dart';
 
-void main() {
-  // Wajib jika menggunakan async di main
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Menjalankan Dependency Injection
-  setupLocator();
-
+  await setupLocator();
   runApp(const FinalProjectApp());
 }
 

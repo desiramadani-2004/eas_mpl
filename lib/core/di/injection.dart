@@ -1,6 +1,9 @@
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
+import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 import '../config/env_config.dart';
+import '../../features/home/data/models/news_model.dart';
 import '../../features/home/data/repositories/news_repository_impl.dart';
 import '../../features/home/domain/repositories/news_repository.dart';
 import '../../features/home/domain/usecases/get_news_articles_usecase.dart';
@@ -9,27 +12,35 @@ import '../../features/home/presentation/cubit/news_cubit.dart';
 
 final locator = GetIt.instance; // [cite: 85]
 
-void setupLocator() { // [cite: 86]
-  // 1. Register Dio (Network) [cite: 88]
-  locator.registerLazySingleton<Dio>(() { // [cite: 89]
-    final dio = Dio(BaseOptions(baseUrl: EnvConfig.baseUrl)); // [cite: 90]
-    
-    // Kita tambahkan logger interseptor standar [cite: 91]
-    dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true)); // [cite: 92]
+// 1. Diubah menjadi Future<void> async karena Isar butuh proses loading
+Future<void> setupLocator() async { 
+  
+  // 2. Buka & Register Database Isar
+  final dir = await getApplicationDocumentsDirectory();
+  final isar = await Isar.open(
+    [NewsModelSchema], // Ini memanggil skema yang di-generate oleh file .g.dart 
+    directory: dir.path,
+  );
+  locator.registerLazySingleton<Isar>(() => isar);
+
+  // 3. Register Dio (Network)
+  locator.registerLazySingleton<Dio>(() {
+    final dio = Dio(BaseOptions(baseUrl: EnvConfig.baseUrl));
+    dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
     return dio;
   });
 
-  // 2. Register Repository (Data Layer)
+  // 4. Register Repository (Data Layer)
   locator.registerLazySingleton<NewsRepository>(
-    () => NewsRepositoryImpl(locator()), // locator() akan otomatis mencari Dio di atas
+    () => NewsRepositoryImpl(locator(), locator()), 
   );
 
-  // 3. Register UseCase (Domain Layer)
+  // 5. Register UseCase (Domain Layer)
   locator.registerLazySingleton(
     () => GetNewsArticlesUseCase(locator()),
   );
 
-  // 4. Register Cubit (Presentation Layer - Pakai Factory biar fresh)
+  // 6. Register Cubit (Presentation Layer)
   locator.registerFactory(
     () => NewsCubit(locator()),
   );

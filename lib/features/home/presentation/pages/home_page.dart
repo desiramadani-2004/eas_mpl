@@ -5,6 +5,7 @@ import '../../../../core/config/env_config.dart';
 import '../../../../core/di/injection.dart';
 import '../cubit/news_cubit.dart';
 import '../cubit/news_state.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -20,6 +21,15 @@ class HomePage extends StatelessWidget {
           title: Text(EnvConfig.appName),
           backgroundColor: EnvConfig.isProduction ? const Color(0xFF0D47A1) : Colors.teal,
           foregroundColor: Colors.white,
+
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.account_circle, size: 30),
+              onPressed: () {
+                context.push('/profile'); // Pindah ke halaman ProfilePage
+              },
+            ),
+          ],
         ),
         
         // BlocBuilder membangun ulang layar sesuai dengan kondisi State (Cubit)
